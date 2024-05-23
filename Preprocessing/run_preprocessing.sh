@@ -1,10 +1,9 @@
-#!/bin/bash
-
+#!/bin/bash #Start of a bash script 
 # This file executes the preprocessing pipeline for every patient in the directory.
 
 if [ "$#" -lt 1 ]   # $# = number of items on command line
 then
-        echo "Usage: Enter path to data directory"
+        echo "/home/atjaglal/Data"   #"Usage: Enter path to data directory"
         exit 2
 fi
 

@@ -29,18 +29,18 @@ touch ${SAVEDIR}/done2
 if [ ! -e ${WORKDIR}/fiesta.nii.gz ]
 then
 	echo "Reorient images"
-        fslreorient2std ${SUBJDIR}/fiesta.nii ${WORKDIR}/fiesta
-        fslreorient2std ${SUBJDIR}/gt_OD-label.nii.gz ${WORKDIR}/gt_OD-label
-        fslreorient2std ${SUBJDIR}/gt_OS-label.nii.gz ${WORKDIR}/gt_OS-label
+        fslreorient2std ${SUBJDIR}/Subject01 ${WORKDIR}/Subject01
+        # fslreorient2std ${SUBJDIR}/gt_OD-label.nii.gz ${WORKDIR}/gt_OD-label
+        # fslreorient2std ${SUBJDIR}/gt_OS-label.nii.gz ${WORKDIR}/gt_OS-label
 
 	echo "Bias field correction"
-	N4BiasFieldCorrection -d 3 -i ${WORKDIR}/fiesta.nii.gz -o ${WORKDIR}/fiesta.nii.gz
+	N4BiasFieldCorrection -d 3 -i ${WORKDIR}/Subject01 -o ${WORKDIR}/Subject01
 
 fi
 
 ## Step 1. Detect eyes using Hough Transform
 # Construct a rough segmentation on fiesta
-./Preprocessing/create_Eyemasks_3DHough.sh ${WORKDIR}/fiesta true
+./Preprocessing/create_Eyemasks_3DHough.sh ${WORKDIR}/Subject01 true
 
 
 ## Step 2. Determine centroids of eyes
@@ -82,7 +82,7 @@ rotm=${WORKDIR}/rotm.mat
 echo "Rotation: angle=$angle"
 fi
 
-# Apply transformation to fiesta
+# Apply transformation to fiesta                Fast imaging employing steady-state acquisition
 if [ ! -e  ${SAVEDIR}/fiesta.nii.gz ];then
 flirt -in ${WORKDIR}/fiesta.nii.gz -ref ${WORKDIR}/fiesta.nii.gz -out ${WORKDIR}/fiesta_rotated.nii.gz -applyisoxfm 0.3 -init $rotm -omat ${WORKDIR}/transform.mat -interp spline
 cp ${WORKDIR}/fiesta_rotated.nii.gz ${SAVEDIR}/fiesta.nii.gz
