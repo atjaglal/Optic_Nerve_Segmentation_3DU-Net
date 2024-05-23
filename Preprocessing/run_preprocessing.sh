@@ -1,4 +1,4 @@
-#!/bin/bash #Start of a bash script 
+#!/bin/bash 
 # This file executes the preprocessing pipeline for every patient in the directory.
 
 if [ "$#" -lt 1 ]   # $# = number of items on command line
