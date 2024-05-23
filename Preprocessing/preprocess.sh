@@ -30,8 +30,8 @@ if [ ! -e ${WORKDIR}/fiesta.nii.gz ]
 then
 	echo "Reorient images"
         fslreorient2std ${SUBJDIR}/Subject01 ${WORKDIR}/Subject01
-        # fslreorient2std ${SUBJDIR}/gt_OD-label.nii.gz ${WORKDIR}/gt_OD-label
-        # fslreorient2std ${SUBJDIR}/gt_OS-label.nii.gz ${WORKDIR}/gt_OS-label
+        fslreorient2std ${SUBJDIR}/tumor-label.nii.gz ${WORKDIR}/tumor-label
+        
 
 	echo "Bias field correction"
 	N4BiasFieldCorrection -d 3 -i ${WORKDIR}/Subject01 -o ${WORKDIR}/Subject01
@@ -68,7 +68,7 @@ fi
 
 ## Step 3. Determine rotation angle and matrix to align eyes
 echo "Calculate rotation matrix"
-python3 ./Preprocessing/find_rotation_matrix.py -s $pOSx $pOSy -d $pODx $pODy -p ${WORKDIR}
+python3 ./Preprocessing/find_rotation_matrix.py -s $pOSx $pOSy -d $pODx $pODy -p ${WORKDIR} #kan ik dit zomaar aanpassen? 
 
 ## Step 4. Apply rotation matrix + resampling when angle > 5 degrees
 echo "Apply transformation"
@@ -102,8 +102,7 @@ sed -n 2p ${SAVEDIR}/coordinates.txt | img2imgcoord -src ${WORKDIR}/fiesta.nii.g
 fi
 
 # Apply transformation to GT
-flirt -ref ${WORKDIR}/fiesta_rotated -in ${WORKDIR}/gt_OD-label -init ${WORKDIR}/transform.mat -applyxfm -out ${SAVEDIR}/gt_OD-label.nii.gz -interp nearestneighbour
-flirt -ref ${WORKDIR}/fiesta_rotated -in ${WORKDIR}/gt_OS-label -init ${WORKDIR}/transform.mat -applyxfm -out ${SAVEDIR}/gt_OS-label.nii.gz -interp nearestneighbour
+flirt -ref ${WORKDIR}/fiesta_rotated -in ${WORKDIR}/tumor-label -init ${WORKDIR}/transform.mat -applyxfm -out ${SAVEDIR}/tumor-label.nii.gz -interp nearestneighbour
 
 rm -r $WORKDIR
 echo "Preprocessing pipeline completed"

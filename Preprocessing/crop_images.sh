@@ -16,19 +16,15 @@ fi
 mkdir $WORKDIR/$SUBJID
 
 # Get center points of eyes in rotated image
-pOS=(`cat ${SUBDIR}/coordinates.txt | sed -n 3p`)
-pOD=(`cat ${SUBDIR}/coordinates.txt | sed -n 4p`)
+ptumor=(`cat ${SUBDIR}/coordinates.txt | sed -n 4p`)
 
 # Round pixel coordinates
-OSx=(`printf "%.0f\n" ${pOS[0]}`)
-OSy=(`printf "%.0f\n" ${pOS[1]}`)
-OSz=(`printf "%.0f\n" ${pOS[2]}`)
-ODx=(`printf "%.0f\n" ${pOD[0]}`)
-ODy=(`printf "%.0f\n" ${pOD[1]}`)
-ODz=(`printf "%.0f\n" ${pOD[2]}`)
+tumorx=(`printf "%.0f\n" ${ptumor[0]}`)
+tumory=(`printf "%.0f\n" ${ptumor[1]}`)
+tumorz=(`printf "%.0f\n" ${ptumor[2]}`)
 
 # Centerpoint between two eyes
-Cx=$( echo "($ODx - $OSx)/2 + $OSx" | bc -l )
+Cx=$( echo "($tumorx - $OSx)/2 + $OSx" | bc -l )
 Cx=(`printf "%.0f\n" $Cx`)
 Cy=${OSy}
 
@@ -39,14 +35,12 @@ Cz=$(( $z / 2 ))
 # Minimum values of bounding box
 zmin=$(( $Cz - 56))
 ymin_OS=$(( OSy - 170 ))
-ymin_OD=$(( ODy - 170 ))
+ymin_tumor=$(( tumory - 170 ))
 xmin_OS=$(( $Cx - 144))
-xmin_OD=$Cx
+xmin_tumor=$Cx
 
 # Crop scans to VOIs
-fslroi ${SUBDIR}/fiesta.nii.gz ${WORKDIR}/$SUBJID//fiesta_OS.nii.gz $xmin_OS 144 $ymin_OS 240 $zmin 112 
-fslroi ${SUBDIR}/fiesta.nii.gz ${WORKDIR}/$SUBJID/fiesta_OD.nii.gz $xmin_OD 144 $ymin_OD 240 $zmin 112 
+fslroi ${SUBDIR}/fiesta.nii.gz ${WORKDIR}/$SUBJID/fiesta_tumor.nii.gz $xmin_tumor 144 $ymin_tumor 240 $zmin 112 
 
 # Crop GT to VOI
-fslroi ${SUBDIR}/gt_OS-label.nii.gz ${WORKDIR}/$SUBJID/gt_OS-label.nii.gz $xmin_OS 144 $ymin_OS 240 $zmin 112 
-fslroi ${SUBDIR}/gt_OD-label.nii.gz ${WORKDIR}/$SUBJID/gt_OD-label.nii.gz $xmin_OD 144 $ymin_OD 240 $zmin 112 
+fslroi ${SUBDIR}/gt_tumor-label.nii.gz ${WORKDIR}/$SUBJID/gt_tumor-label.nii.gz $xmin_tumor 144 $ymin_tumor 240 $zmin 112 

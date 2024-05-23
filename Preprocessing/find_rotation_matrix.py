@@ -11,8 +11,7 @@ from scipy.spatial.transform import Rotation as R
 
 
 parser = optparse.OptionParser()
-parser.add_option('-s','--pOS',action="store",type="float", dest="pOS", nargs=2)        # Centroid left eye
-parser.add_option('-d','--pOD',action="store",type="float", dest="pOD", nargs=2)        # Centroid right eye
+parser.add_option('-d','--ptumor',action="store",type="float", dest="ptumor", nargs=2)        # Centroid tumor
 parser.add_option('-p','--path',action="store",type="string", dest="path") 
 options, args = parser.parse_args()
 
@@ -24,7 +23,7 @@ def get_angle(p1,p2):
     angle = math.degrees(theta)  # angle is in (-180, 180]
     return angle
 
-angle = get_angle(options.pOS, options.pOD)
+angle = get_angle(options.ptumor)
 
 "Creat rotation matrix"
 r = R.from_euler('z', angle, degrees=True)

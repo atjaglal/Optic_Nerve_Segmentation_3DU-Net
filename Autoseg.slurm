@@ -22,4 +22,4 @@ module load neuroImaging/ANTs/2.3.5/gcc-8.3.1
 source $HOME/Optic_Nerve_Segmentation_3DU-Net/venv/bin/activate
 
 TEST_DIR=$(pwd)
-echo "## Current dircectory $TEST_DIR"
+echo "## Current directory $TEST_DIR"
